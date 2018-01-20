@@ -95,5 +95,9 @@ select *
 from customer c, customer_address ca
 where c.customer_id=ca.customer_id;
 
-
+select *
+from customer c, customer_address ca
+where c.customer_id=ca.customer_id
+and c.customer_email like '%.com'
+and ca.city = 'Town 1';
 
