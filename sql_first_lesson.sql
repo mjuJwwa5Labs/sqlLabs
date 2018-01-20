@@ -1,3 +1,5 @@
+-- tworzenie tabel
+
 /*
 CREATE TABLE customer (
     customer_id INT NOT NULL AUTO_INCREMENT,
@@ -45,6 +47,12 @@ insert into customer (customer_name, customer_phone, customer_email) values
 insert into customer () values (null, 'Mark Thomas', '777-111-333', 'mt@mail.net');
 */
 
+/*
+insert into customer_address (street, city, country, zip_code, customer_id) values
+('Street 1','Town 1','USA','00-111',1),
+('Street 2','Town 2','USA','00-111',2),
+('Ulica 3','Miasto 3','Poland','00-111',3);
+*/
 
 select * 
 from customer;
@@ -61,10 +69,21 @@ select *
 from customer 
 where customer_phone like '%333%';
 
+select * 
+from customer 
+where customer_name like '%Smith'
+and customer_email like '%com';
 
+select * 
+from customer 
+where customer_email like '%com'
+or customer_email like '%net';
 
-
-
+select cust.* 
+from client_order.customer as cust
+where cust.customer_email like '%com'
+or cust.customer_email like '%net'
+order by customer_name asc, customer_phone desc;
 
 
 
