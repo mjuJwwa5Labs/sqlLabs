@@ -54,6 +54,9 @@ insert into customer_address (street, city, country, zip_code, customer_id) valu
 ('Ulica 3','Miasto 3','Poland','00-111',3);
 */
 
+insert into customer_address (street, city, country, zip_code, customer_id) values
+('Ulica 2','Miasto 2','Poland','00-111',3);
+
 select * 
 from customer;
 
@@ -80,14 +83,17 @@ where customer_email like '%com'
 or customer_email like '%net';
 
 select cust.* 
-from client_order.customer as cust
-where cust.customer_email like '%com'
-or cust.customer_email like '%net'
-order by customer_name asc, customer_phone desc;
+ from client_order.customer as cust
+ where cust.customer_email like '%com'
+ or cust.customer_email like '%net'
+ order by customer_name asc, customer_phone desc;
 
 
+select * from customer_address;
 
-
+select *
+from customer c, customer_address ca
+where c.customer_id=ca.customer_id;
 
 
 
