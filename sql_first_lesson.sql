@@ -108,3 +108,20 @@ alter table customer_order;
 
 ALTER TABLE customer_order ADD COLUMN customer_order_total_cost DECIMAL NOT NULL AFTER customer_order_completation_date;
 ALTER TABLE customer_order ADD COLUMN customer_address_id INT NOT NULL AFTER customer_order_total_cost;
+
+create table product (
+	product_id int not null auto_increment,
+    product_name varchar(50) not null,
+    product_price decimal not null,
+    product_category int not null,
+    quantity decimal not null,
+    unit_id int not null,
+    primary key(product_id)
+);
+
+create table unit (
+	unit_id int not null auto_increment,
+    unit_code varchar(10) not null,
+    unit_description varchar(50),
+    primary key  (unit_id)
+);
