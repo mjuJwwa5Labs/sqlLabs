@@ -120,3 +120,16 @@ select * from departments;
 		)
 	group by (d.dept_no)
 	order by count(distinct dm.emp_no) DESC;
+    
+-- kolejne smutne zadanko
+select d.dept_name, count(distinct de.emp_no)
+from departments d
+inner join dept_emp de
+	using (dept_no)
+where de.dept_no in (
+	select d1.dept_no
+	from departments d1
+	where d1.dept_name in ('Development')
+    )
+group by d.dept_name;
+
