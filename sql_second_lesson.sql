@@ -81,7 +81,11 @@ select * from departments;
 	or dept_name='Finance';
 
 -- teraz wstawiam to w główne zapytanie
-	select d.dept_name, count(distinct dm.emp_no)  'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
+	-- v1
+    select 
+		d.dept_name, 
+        count(distinct dm.emp_no)  'ilosc_pracownikow', 
+        sum(s.salary) 'zarobki total dzialu'
 	from departments d
 	inner join dept_emp dm
 		using (dept_no)
@@ -94,6 +98,25 @@ select * from departments;
 			where dept_name='Customer Service' 
 			or dept_name='Development'
 			or dept_name='Finance'
+		)
+	group by (d.dept_no)
+	order by count(distinct dm.emp_no) DESC;
+    
+    -- v2
+	select
+		d.dept_name, 
+		count(distinct dm.emp_no)  'ilosc_pracownikow', 
+        sum(s.salary) 'zarobki total dzialu'
+	from departments d
+	inner join dept_emp dm
+		using (dept_no)
+	inner join salaries s
+		using (emp_no)
+		where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
+		and d.dept_no in (
+			select dept_no 
+			from departments
+			where dept_name in ('Customer Service', 'Development', 'Finance')
 		)
 	group by (d.dept_no)
 	order by count(distinct dm.emp_no) DESC;
