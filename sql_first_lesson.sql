@@ -101,3 +101,10 @@ where c.customer_id=ca.customer_id
 and c.customer_email like '%.com'
 and ca.city = 'Town 1';
 
+-- 21.01
+
+use client_order;
+alter table customer_order;
+
+ALTER TABLE customer_order ADD COLUMN customer_order_total_cost DECIMAL NOT NULL AFTER customer_order_completation_date;
+ALTER TABLE customer_order ADD COLUMN customer_address_id INT NOT NULL AFTER customer_order_total_cost;
