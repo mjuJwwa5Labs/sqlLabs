@@ -133,3 +133,48 @@ where de.dept_no in (
     )
 group by d.dept_name;
 
+-- zadanie na rozmyślanie
+-- query zwroci informacje o 
+
+-- wszyscy ktorzy byli managerami
+select distinct de.emp_no 
+from dept_emp de
+left join dept_manager dm
+using (emp_no)
+where dm.dept_no is not null;
+
+-- wszyscy, ktrzy nie byli managerami
+select distinct de.emp_no
+from dept_emp de
+left join dept_manager dm
+using (emp_no)
+where dm.dept_no is null;
+
+select count(e.emp_no), e.emp_no
+from employees e
+inner join titles t
+using (emp_no)
+group by e.emp_no
+having count(emp_no)>1;
+
+-- dokonczyc...
+-- zbieramy imie i nazwisko, stanowisko oraz wyplate wszystkich, ktorzy nie byli managerami
+-- oraz ile zarobily przez rok od dnia zatrudnienia
+select
+	e.emp_no,
+    e.first_name,
+    e.last_name
+    -- t.title,
+    -- sum(s.salary)
+from employees e
+left join dept_manager dm
+	using (emp_no)
+ -- inner join salaries s
+-- 	using (emp_no)
+-- inner join titles t
+-- 	using (emp_no)
+where dm.dept_no is null
+and e.emp_no = 10009
+-- and e.hire_date + INTERVAL 365 DAY
+-- group by e.emp_no
+order by e.emp_no;
