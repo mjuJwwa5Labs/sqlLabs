@@ -34,3 +34,33 @@ select *
 from employees e
 left join dept_manager dm
 	using (emp_no);
+    
+select d.dept_name, count(dm.dept_no) 'ilosc_pracownikow'
+from departments d
+inner join dept_emp dm
+	using (dept_no)
+where dm.from_date > '1991-01-01' and dm.to_date < '1991-12-31'
+group by (d.dept_no)
+order by count(dm.dept_no) DESC;
+    
+select d.dept_name, count(dm.dept_no) 'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
+from departments d
+inner join dept_emp dm
+	using (dept_no)
+inner join employees e
+	using (emp_no)
+inner join salaries s
+	using (emp_no)
+	where dm.from_date > '1991-01-01' and dm.to_date < '1991-12-31'
+group by (d.dept_no)
+order by count(dm.dept_no) DESC;
+
+select d.dept_name, count(distinct dm.emp_no)  'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
+from departments d
+inner join dept_emp dm
+	using (dept_no)
+inner join salaries s
+	using (emp_no)
+	where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
+group by (d.dept_no)
+order by count(distinct dm.emp_no) DESC;
