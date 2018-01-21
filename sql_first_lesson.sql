@@ -101,8 +101,9 @@ where c.customer_id=ca.customer_id
 and c.customer_email like '%.com'
 and ca.city = 'Town 1';
 
--- 21.01
-
+-- =======================
+-- 		   21.01
+-- =======================
 use client_order;
 alter table customer_order;
 
@@ -125,3 +126,20 @@ create table unit (
     unit_description varchar(50),
     primary key  (unit_id)
 );
+
+create table product_category (
+	product_category_id int not null auto_increment,
+    category_name varchar(50) not null,
+    category_description varchar(70),
+    primary key (product_category_id)
+);
+
+create table order_entry (
+	order_entry_id int not null auto_increment,
+    product_id int not null,
+    quantity decimal not null,
+    product_price decimal not null,
+    customer_order_id int not null,
+	primary key (order_entry_id)
+);
+
