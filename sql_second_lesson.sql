@@ -51,7 +51,7 @@ inner join employees e
 	using (emp_no)
 inner join salaries s
 	using (emp_no)
-	where dm.from_date > '1991-01-01' and dm.to_date < '1991-12-31'
+	where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
 group by (d.dept_no)
 order by count(dm.dept_no) DESC;
 
