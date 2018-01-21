@@ -42,19 +42,9 @@ inner join dept_emp dm
 where dm.from_date > '1991-01-01' and dm.to_date < '1991-12-31'
 group by (d.dept_no)
 order by count(dm.dept_no) DESC;
-    
-select d.dept_name, count(dm.dept_no) 'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
-from departments d
-inner join dept_emp dm
-	using (dept_no)
-inner join employees e
-	using (emp_no)
-inner join salaries s
-	using (emp_no)
-	where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
-group by (d.dept_no)
-order by count(dm.dept_no) DESC;
 
+-- suma wypłaconych wypłat w podziale na działy wraz z ilością pracowników, 
+-- która w tym okresie pracowała w danym dziale
 select d.dept_name, count(distinct dm.emp_no)  'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
 from departments d
 inner join dept_emp dm
@@ -64,3 +54,46 @@ inner join salaries s
 	where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
 group by (d.dept_no)
 order by count(distinct dm.emp_no) DESC;
+
+-- suma wypłaconych wypłat w podziale na działy wraz z ilością pracowników, 
+-- która w tym okresie pracowała w danym dziale, dla działów które były większe niż 30 osób
+select d.dept_name, count(distinct dm.emp_no)  'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
+from departments d
+inner join dept_emp dm
+	using (dept_no)
+inner join salaries s
+	using (emp_no)
+	where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
+group by (d.dept_no)
+having count(distinct dm.emp_no) > 30
+order by count(distinct dm.emp_no) DESC;
+
+select * from departments;
+
+-- ilosc pracownikow w danym dziale dla id 
+-- departamentow wyciagnietych po ich nazwie
+	
+    -- najpierw piszę sobie podzapytanie do głównego zapytania
+	select distinct dept_no 
+	from departments
+	where dept_name='Customer Service' 
+	or dept_name='Development'
+	or dept_name='Finance';
+
+-- teraz wstawiam to w główne zapytanie
+	select d.dept_name, count(distinct dm.emp_no)  'ilosc_pracownikow', sum(s.salary) 'zarobki total dzialu'
+	from departments d
+	inner join dept_emp dm
+		using (dept_no)
+	inner join salaries s
+		using (emp_no)
+		where dm.from_date >= '1991-01-01' and dm.to_date <= '1991-12-31'
+		and d.dept_no in (
+			select dept_no 
+			from departments
+			where dept_name='Customer Service' 
+			or dept_name='Development'
+			or dept_name='Finance'
+		)
+	group by (d.dept_no)
+	order by count(distinct dm.emp_no) DESC;
