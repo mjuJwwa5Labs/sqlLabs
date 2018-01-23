@@ -227,16 +227,29 @@ where dm.emp_no is null
 ;
 
 
-select 
-	e.emp_no,
+-- '170123'
+-- '170123'
+
+-- poniższa wersja jest chyba ostatecznie poprawna
+select distinct
+	-- /*
+    e.emp_no,
     concat(e.first_name,' ',e.last_name),
     e.hire_date,
     s.salary,
     s.from_date,
-    s.to_date
+    s.to_date,
+    t.title
+    
+    -- */
+    -- count(*)
 from employees e
-inner join salaries s on e.emp_no = s.emp_no
-	and ((s.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))) -- z powodu jakości danych, trzeba brać 364 dni zamiast 365 dni
+inner join salaries s on e.emp_no = s.emp_no and ((s.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))) -- z powodu jakości danych, trzeba brać 364 dni zamiast 365 dni
+left join dept_manager dm on e.emp_no = dm.emp_no
+left join titles t on t.emp_no = e.emp_no and ((t.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))) -- z powodu jakości danych, trzeba brać 364 dni zamiast 365 dni
+left join departments d on d.dept_no = dm.dept_no
+where dm.emp_no is null
+order by emp_no asc
 ;
 
 
