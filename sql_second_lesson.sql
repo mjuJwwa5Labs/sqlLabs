@@ -163,18 +163,93 @@ having count(emp_no)>1;
 select
 	e.emp_no,
     e.first_name,
-    e.last_name
-    -- t.title,
-    -- sum(s.salary)
+    e.last_name,
+    t.title,
+    sum(s.salary)
 from employees e
 left join dept_manager dm
 	using (emp_no)
- -- inner join salaries s
--- 	using (emp_no)
--- inner join titles t
--- 	using (emp_no)
+inner join salaries s
+ 	using (emp_no)
+inner join titles t
+	using (emp_no)
 where dm.dept_no is null
-and e.emp_no = 10009
--- and e.hire_date + INTERVAL 365 DAY
--- group by e.emp_no
+-- and e.emp_no = 10009
+and e.hire_date + INTERVAL 365 DAY
+group by e.emp_no
 order by e.emp_no;
+
+-- Assistant Engineer
+-- Engineer
+-- Manager
+-- Senior Engineer
+-- Senior Staff
+-- Staff
+-- Technique Leader
+
+-- # emp_no,	'name', 			hire_date, 		salary, 	from_date, 		to_date  PRZYKŁAD PODWYŻKI W TRAKCIE PIERWSZEGO ROKU
+-- '10235',		'Susanta Roccetti', '1995-04-06', 	'41941', 	'1995-04-06', 	'1996-04-04'
+-- '10235',		'Susanta Roccetti', '1995-04-06', 	'45643', 	'1996-04-04',	'1997-04-04'
+
+
+-- '273517'
+
+
+select distinct 
+	t1.emp_no 'Id Pracownika',
+    concat(e.first_name, ' ',e.last_name) 'Pracownik',
+    -- ROW_NUMBER() OVER(PARTITION BY e.emp_no order by e.emp_no) AS row_num1,
+    t2.from_date 'Assistant Engineer od',
+    t3.from_date 'Engineer od',
+    t4.from_date 'Manager od',
+    t5.from_date 'Senior Engineer od',
+    t6.from_date 'Senior Staff od',
+    t7.from_date 'Staff od',
+    t8.from_date 'Technique Leader od',
+    s1.salary 'Wypłaty'
+    
+    
+    -- count(*)
+    
+from titles t1
+
+inner join employees e on e.emp_no = t1.emp_no
+left join titles t2 on t2.title = 'Assistant Engineer' and t1.emp_no = t2.emp_no and (t2.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t3	on t3.title = 'Engineer' and t1.emp_no = t3.emp_no and (t3.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t4	on t4.title = 'Manager' and t1.emp_no = t4.emp_no and (t4.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t5	on t5.title = 'Senior Engineer' and t1.emp_no = t5.emp_no and (t5.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t6	on t6.title = 'Senior Staff' and t1.emp_no = t6.emp_no and (t6.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t7	on t7.title = 'Staff' and t1.emp_no = t7.emp_no and (t7.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+left join titles t8	on t8.title = 'Technique Leader' and t1.emp_no = t8.emp_no and (t8.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))
+inner join salaries s1 on s1.emp_no = t1.emp_no and ((s1.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY)))
+left join dept_manager dm on s1.emp_no = dm.emp_no
+where dm.emp_no is null
+;
+
+
+select 
+	e.emp_no,
+    concat(e.first_name,' ',e.last_name),
+    e.hire_date,
+    s.salary,
+    s.from_date,
+    s.to_date
+from employees e
+inner join salaries s on e.emp_no = s.emp_no
+	and ((s.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))) -- z powodu jakości danych, trzeba brać 364 dni zamiast 365 dni
+;
+
+
+select emp_no, title, from_date, to_date from titles where emp_no='10235';
+
+
+
+
+
+
+
+
+
+
+
+
