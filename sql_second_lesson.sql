@@ -268,10 +268,17 @@ group by de.dept_no					-- grupuje po numerze pracownika z dept_employee
 ;
 
 
-select * from employees;
+-- 2018-01-27
+
+-- zwraca numer znaku, na którym jest dany element
+select e.emp_no, e.first_name, e.last_name, instr(e.first_name, 'rgi')
+from employees e
+group by e.emp_no
+order by e.emp_no ASC
+;
 
 -- liczymy średnią zarobków kazdego managera za dany okres
-select e.emp_no, e.first_name, e.last_name, s.from_date 's.from_date', s.to_date 's.to_date', avg(s.salary)
+select e.emp_no, e.first_name, e.last_name, instr(e.first_name, 'garet'), s.from_date 's.from_date', s.to_date 's.to_date', avg(s.salary)
 from employees e
 inner join dept_manager dm
 	on e.emp_no = dm.emp_no
@@ -281,7 +288,30 @@ where s.from_date > '1989-01-01' and s.to_date < '1992-01-01'
 group by e.emp_no
 ;
 
+-- wylicz ile jest kobiet ile jest mężczyzn
+select
+	sum(case when gender = 'M' then 1 else 0 end) as 'Male',
+    sum(case when gender = 'F' then 1 else 0 end) as 'Female'
+from employees;
 
+-- to samo co wyżej tylko rozszerzamy o wyliczenie stosunku male/female
+select
+	sum(case when gender = 'M' then 1 else 0 end) as 'Male',
+    sum(case when gender = 'F' then 1 else 0 end) as 'Female',
+    sum(case when gender = 'M' then 1 else 0 end)/sum(case when gender = 'F' then 1 else 0 end) as 'Male/Female'
+from employees; -- czas wykonywania 0.219
 
+-- to samo co wyżej tylko wersja Janka
+SELECT Male, Female, Male/Female FROM (
+SELECT
+SUM(CASE WHEN gender = 'M' THEN 1 ELSE 0 END) AS 'Male',
+SUM(CASE WHEN gender = 'F' THEN 1 ELSE 0 END) AS 'Female'
+FROM employees) X
+; -- czas wykonywania 0.157
 
+-- szukamy wszystkich pracownikow, ktorzy maja wiecej niz 45 lat
+select e.emp_no, e.birth_date, year(curdate()) - year(e.birth_date)
+from employees e
+where year(curdate()) - year(e.birth_date) > 45
+;
 
