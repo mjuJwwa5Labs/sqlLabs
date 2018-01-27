@@ -231,16 +231,15 @@ where dm.emp_no is null
 -- '170123'
 
 -- poniższa wersja jest chyba ostatecznie poprawna
-select distinct
+select -- distinct
 	-- /*
-    e.emp_no,
-    concat(e.first_name,' ',e.last_name),
-    e.hire_date,
-    s.salary,
-    s.from_date,
-    s.to_date,
-    t.title
-    
+    e.emp_no 'pracownik id' ,
+    concat(e.first_name,' ',e.last_name) 'pracownik',
+    e.hire_date 'data zatrudnienia',
+    s.salary 'wyplata przez rok od zatrudnienia',
+    s.from_date 'stawka roczna od',
+    s.to_date 'stawka roczna do',
+    t.title 'stanowisko pelnione przez rok od zatrudnienia'
     -- */
     -- count(*)
 from employees e
@@ -249,18 +248,38 @@ left join dept_manager dm on e.emp_no = dm.emp_no
 left join titles t on t.emp_no = e.emp_no and ((t.from_date between e.hire_date AND (e.hire_date + INTERVAL 364 DAY))) -- z powodu jakości danych, trzeba brać 364 dni zamiast 365 dni
 left join departments d on d.dept_no = dm.dept_no
 where dm.emp_no is null
-order by emp_no asc
+group by e.emp_no
+order by e.emp_no asc
 ;
 
 
 select emp_no, title, from_date, to_date from titles where emp_no='10235';
 
+-- managerów 		= 24
+-- nie managerów 	= 331579
+
+select de.dept_no, count(de.emp_no)	-- wybieram numer działu z dept_emp i zliczam rekordy z dept_emp
+from dept_emp de 					-- zaczynam od tabeli dept_emp
+left join dept_manager dm 			-- łączę się z tabelą, która ma informacje o managerach
+on de.emp_no = dm.emp_no 			-- łączę się po kluczu emp_no
+where dm.emp_no is null 			-- wybieram tylko te rekordy, które nie mają swojego dopasowania
+									-- w dept_manager, czyli te rekordy, gdzie pracownik nie był managerem
+group by de.dept_no					-- grupuje po numerze pracownika z dept_employee
+;
 
 
+select * from employees;
 
-
-
-
+-- liczymy średnią zarobków kazdego managera za dany okres
+select e.emp_no, e.first_name, e.last_name, s.from_date 's.from_date', s.to_date 's.to_date', avg(s.salary)
+from employees e
+inner join dept_manager dm
+	on e.emp_no = dm.emp_no
+inner join salaries s
+	on e.emp_no = s.emp_no
+where s.from_date > '1989-01-01' and s.to_date < '1992-01-01'
+group by e.emp_no
+;
 
 
 
